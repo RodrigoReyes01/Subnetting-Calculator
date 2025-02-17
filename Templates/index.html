@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subnetting Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #c5e4e7;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            gap: 20px;
+        }
+        .input-section, .output-section {
+            padding: 20px;
+            border-radius: 10px;
+        }
+        .input-section {
+            background: #f3f9fa;
+        }
+        .output-section {
+            background: #00494d;
+            color: white;
+        }
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+        }
+        .calculate {
+            background: #26c0ab;
+            color: white;
+            cursor: pointer;
+        }
+        .calculate:hover {
+            background: #1aa88d;
+        }
+        .reset {
+            background: #0d686d;
+            color: white;
+            cursor: pointer;
+        }
+        .reset:hover {
+            background: #0b5c5e;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="input-section">
+            <h2>Subnetting Calculator</h2>
+            <label for="network">Network Address:</label>
+            <input type="text" id="network" placeholder="192.168.1.0">
+            <label for="subnet-mask">Subnet Mask:</label>
+            <input type="text" id="subnet-mask" placeholder="255.255.255.0">
+            <button class="calculate" onclick="calculateSubnet()">Calculate</button>
+        </div>
+        <div class="output-section">
+            <h2>Results</h2>
+            <p>Number of Hosts: <span id="hosts">0</span></p>
+            <p>Number of Subnets: <span id="subnets">0</span></p>
+            <p>Subnet Increment: <span id="increment">0</span></p>
+            <button class="reset" onclick="resetCalculator()">Reset</button>
+        </div>
+    </div>
+
+    <script>
+        function calculateSubnet() {
+            let network = document.getElementById("network").value;
+            let subnetMask = document.getElementById("subnet-mask").value;
+            
+            // Convert subnet mask to binary and count host bits
+            let maskParts = subnetMask.split(".").map(Number);
+            let binaryMask = maskParts.map(part => part.toString(2).padStart(8, '0')).join('');
+            let hostBits = binaryMask.split('0').length - 1;
+            let subnetBits = 32 - hostBits;
+
+            let numberOfHosts = Math.pow(2, hostBits) - 2;
+            let numberOfSubnets = Math.pow(2, subnetBits);
+            let subnetIncrement = 256 / Math.pow(2, subnetBits % 8);
+
+            document.getElementById("hosts").innerText = numberOfHosts;
+            document.getElementById("subnets").innerText = numberOfSubnets;
+            document.getElementById("increment").innerText = subnetIncrement;
+        }
+
+        function resetCalculator() {
+            document.getElementById("network").value = "";
+            document.getElementById("subnet-mask").value = "";
+            document.getElementById("hosts").innerText = "0";
+            document.getElementById("subnets").innerText = "0";
+            document.getElementById("increment").innerText = "0";
+        }
+    </script>
+</body>
+</html>
